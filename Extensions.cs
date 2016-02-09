@@ -5,6 +5,7 @@ using UnityEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security;
 
 namespace ACO{
 	/*public static class ListExtensions{
@@ -36,7 +37,11 @@ namespace ACO{
 		static public int GetPercentage(this int arg, float arg2){
 			return (int)(((float)arg).GetPercentage(arg2));
 		}
-	}
+        public static bool IsOdd(this int arg)
+        {
+            return arg % 2 != 0;
+        }
+    }
 	public static class FloatExtensions{
 	    public static float GetPercentage(this float arg, float arg2){
 	        return (arg / 100f) * arg2;
@@ -46,7 +51,37 @@ namespace ACO{
 		public static T ParseToEnum<T>(this string value){
 		    return (T)System.Enum.Parse(typeof(T), value, true);
 		}
-	}
+        /*public static SecureString ConvertToSecureString(this string password)
+        {
+            if (password == null)
+                throw new ArgumentNullException("password");
+
+            unsafe
+            {
+                fixed (char* passwordChars = password)
+                {
+                    var securePassword = new SecureString(passwordChars, password.Length);
+                    securePassword.MakeReadOnly();
+                    return securePassword;
+                }
+            }
+        }*/
+        public static string GetBeforeNextChar(this string sourceString, char trimed)
+        {
+            string[] splits = sourceString.Split(trimed);
+            return splits[0];
+        }
+        public static string TrimStartCharacter(this string sourceString, char trimed)
+        {
+            sourceString = sourceString.TrimStart(trimed);
+            return sourceString;
+        }
+        public static string TrimStartString(this string sourceString, string trimed)
+        {
+            sourceString = sourceString.TrimStart(trimed.ToCharArray());
+            return sourceString;
+        }
+    }
 	public class EnumDictionary<K, V, P> : DictionarySerializable<K, V> 
 	where K : struct, IConvertible 
 	where V : new() 
@@ -76,6 +111,17 @@ namespace ACO{
 				refList.Add(new P{Key = v.Key, Value = v.Value});
 			}
 		}
+        public bool Contains(K k)
+        {
+            foreach (var v in list)
+            {
+                if (v.Key.Equals(k))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 		void FillMissing(){
 			var arr = Enum.GetValues(typeof(K));
 			bool finded = false;

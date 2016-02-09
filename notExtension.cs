@@ -48,7 +48,7 @@ using System.Collections.Generic;
 
 namespace ACO{
 	public class Utility {
-		public static List<T> GetComponentsSortedToList<T>(Transform obj) where T : MonoBehaviour{
+		public static List<T> GetComponentsSortedToList<T>(Transform obj) where T : UnityEngine.MonoBehaviour{
 			List<T> res = new List<T>(); T ef;
 			foreach (Transform tr in obj){
 				if (tr.gameObject.activeInHierarchy){
@@ -59,7 +59,7 @@ namespace ACO{
 			res.Sort((L, R) => L.transform.GetSiblingIndex() > R.transform.GetSiblingIndex() ? 1 : -1);
 			return res;
 		}
-		public static T FindParent<T>(Transform obj) where T : MonoBehaviour{
+		public static T FindParent<T>(Transform obj) where T : UnityEngine.MonoBehaviour{
 			T res = null;
 			Transform tr = obj;
 			while (res == null){
@@ -109,13 +109,21 @@ namespace ACO{
 	        }
 	    }
 	    public static void ShakeList<T>(ref List<T> list){
-	    	System.Random RND = new System.Random();
             for (int i = 0; i < list.Count; i++)
             {
                 T tmp = list[0];
                 list.RemoveAt(0);
-                list.Insert(RND.Next(list.Count), tmp);
+                list.Insert(ACO.Random.Range(list.Count), tmp);
             }
 	    }
-	}
+        public static T GetRandomEnumValue<T>() where T : struct, IConvertible
+        {
+            if (!typeof(T).IsEnum)
+            {
+                throw new ArgumentException("'T' must be an enumerated type");
+            }
+            System.Array values = System.Enum.GetValues(typeof(T));
+            return (T)values.GetValue(ACO.Random.Range(values.Length));
+        }
+    }
 }
