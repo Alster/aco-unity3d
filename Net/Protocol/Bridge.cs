@@ -56,9 +56,9 @@ namespace ACO.Net.Protocol
                 LogShow(logMessage);
             }
             
-            dataConverter.ApplyCredentials(ref j, config.credentials);
+            dataConverter.ApplyCredentials(ref j, config.token);
             string data = dataConverter.GoString(j);
-            UnityEngine.Debug.Log("DATA: " + data);
+            //UnityEngine.Debug.Log("DATA: " + data);
             EmitBase(System.String.Format(
                 "{0}{1}{2}",
                 prefix, addressSeparator, act

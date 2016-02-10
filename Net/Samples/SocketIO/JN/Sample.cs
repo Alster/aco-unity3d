@@ -13,10 +13,7 @@ namespace ACO.Net.Samples.SocketIO.JN
 
             DataFormat.JN.Converter converter = new DataFormat.JN.Converter();
             Config config = new Config();
-            Credentials credentials = new Credentials();
-            credentials.uid = "someuid";
-            credentials.token = "sometoken";
-            config.credentials = credentials;
+            config.token = "sometoken";
             config.logBegin = Debug.Log;
             config.logFinish = (m) => { };
             config.errorRaise = Debug.LogError;

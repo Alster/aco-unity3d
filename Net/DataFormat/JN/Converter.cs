@@ -8,14 +8,14 @@ namespace ACO.Net.DataFormat.JN
 
         public JSONObject FromString(string str)
         {
-            UnityEngine.Debug.Log("converter: " + str);
-            UnityEngine.Debug.Log("converter result: " + JSONObject.Create(str).ToString());
+            //UnityEngine.Debug.Log("converter: " + str);
+            //UnityEngine.Debug.Log("converter result: " + JSONObject.Create(str).ToString());
             return JSONObject.Create(str)[0];
         }
 
         public string GoString(JSONObject source)
         {
-            UnityEngine.Debug.Log("converter: " + source.ToString());
+            //UnityEngine.Debug.Log("converter: " + source.ToString());
             return source.ToString();
         }
 
@@ -25,12 +25,9 @@ namespace ACO.Net.DataFormat.JN
             return source[responseName].str;
         }
 
-        public void ApplyCredentials(ref JSONObject source, Credentials cr)
+        public void ApplyCredentials(ref JSONObject source, string token)
         {
-            JSONObject j = JSONObject.Create(JSONObject.Type.OBJECT);
-            j.AddField("uid", cr.uid);
-            j.AddField("token", cr.token);
-            source.AddField("auth", j);
+            source.AddField("token", token);
         }
         public JSONObject Pack<T>(T from) where T : class
         {

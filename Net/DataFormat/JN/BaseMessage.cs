@@ -2,7 +2,7 @@
 {
     public class BaseMessage
     {
-        public ACO.Net.Credentials auth;
+        public string token;
         public string error;
         public string data;
     }

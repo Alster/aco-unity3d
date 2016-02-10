@@ -6,6 +6,6 @@
         public System.Action<string> logBegin;
         public System.Action<string> logFinish;
         public System.Action<string> errorRaise;
-        public Credentials credentials;
+        public string token;
     }
 }

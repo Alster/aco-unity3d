@@ -5,7 +5,7 @@
         string GoString(T source);
         T FromString(string str);
         string GetErrorMessage(T source);
-        void ApplyCredentials(ref T source, Credentials cr);
+        void ApplyCredentials(ref T source, string token);
         T Pack<A>(A from) where A : class;
         A Unpack<A>(T pm) where A : class;
     }

@@ -23,12 +23,9 @@
             return source[responseName].str;
         }
 
-        public void ApplyCredentials(ref JSONObject source, Credentials cr)
+        public void ApplyCredentials(ref JSONObject source, string token)
         {
-            JSONObject j = JSONObject.Create(JSONObject.Type.OBJECT);
-            j.AddField("uid", cr.uid);
-            j.AddField("token", cr.token);
-            source.AddField("auth", j);
+            source.AddField("token", token);
         }
         public JSONObject Pack<T>(T from) where T : class
         {

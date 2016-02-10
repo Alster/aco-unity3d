@@ -46,9 +46,9 @@ namespace ACO.Net.Protocol.SocketIO
             {
                 j.AddField("message", testDataissue);
             }
-            UnityEngine.Debug.Log("PRESEND FINAL DATA: " + j.ToString());
+            //UnityEngine.Debug.Log("PRESEND FINAL DATA: " + j.ToString());
             this.connector.socket.Emit(message, j, (res) => {
-                UnityEngine.Debug.Log(res.ToString());
+                //UnityEngine.Debug.Log(res.ToString());
                 if (callback != null)
                 {
                     callback(res.ToString());
