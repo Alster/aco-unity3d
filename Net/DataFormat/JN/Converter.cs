@@ -21,7 +21,7 @@ namespace ACO.Net.DataFormat.JN
 
         public string GetErrorMessage(JSONObject source)
         {
-            UnityEngine.Debug.Log(source.ToString());
+            //UnityEngine.Debug.Log(source.ToString());
             return source[responseName].str;
         }
 
@@ -43,9 +43,12 @@ namespace ACO.Net.DataFormat.JN
         {
             return JsonConvert.SerializeObject(source);
         }
+        JsonSerializerSettings settings = new Newtonsoft.Json.JsonSerializerSettings();
         T Deserialize<T>(string source)
         {
-            return JsonConvert.DeserializeObject<T>(source);
+            settings.NullValueHandling = NullValueHandling.Include;
+            settings.MissingMemberHandling = MissingMemberHandling.Error;
+            return JsonConvert.DeserializeObject<T>(source, settings);
         }
     }
 }

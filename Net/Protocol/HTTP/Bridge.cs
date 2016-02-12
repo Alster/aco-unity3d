@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ACO.Net.Protocol.HTTP
 {
-    public abstract class Bridge<T> : Protocol.Bridge<T>
+    public abstract class Bridge<T> : Protocol.Bridge<T> where T : class
     {
         static Bridge()
         {

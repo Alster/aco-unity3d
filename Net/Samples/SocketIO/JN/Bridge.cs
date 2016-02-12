@@ -16,8 +16,8 @@ namespace ACO.Net.Samples.SocketIO.JN
             System.Func<JSONObject, bool> onFail = null
             )
         {
-            Emit("test", dataConverter.Pack(req), testErrors, (res) => {
-                onSuccess(dataConverter.Unpack<Response>(res));
+            Emit("test", Pack(req), testErrors, (res) => {
+                onSuccess(Unpack<Response>(res));
             }, (res) => {
                 return onFail(new JSONObject());
             }, null, "Testing bridge");

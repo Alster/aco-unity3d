@@ -1,10 +1,16 @@
 ﻿using SocketIO;
 using UnityEngine.Assertions;
+using System.Threading;
 
 namespace ACO.Net.Protocol.SocketIO
 {
-    public class Bridge<T> : Protocol.Bridge<T>
+    public class Bridge<T> : Protocol.Bridge<T> where T : class
     {
+        static Bridge()
+        {
+            baseErrors.Add("authDataEmpty", "Incorrect authorization data");
+            baseErrors.Add("noUserFinded", "Failed to authorize player");
+        }
         public Bridge(DataFormat.Converter<T> dataConverter, Config config, Net.Protocol.SocketIO.Connector connector) : base(dataConverter, config)
         {
             this.connector = connector;
@@ -25,7 +31,7 @@ namespace ACO.Net.Protocol.SocketIO
         }
         public virtual void Init(SocketIOComponent socket)
         {
-            UnityEngine.Debug.Log("Bridge initialized: "+prefix);
+            //UnityEngine.Debug.Log("Bridge initialized: "+prefix);
             Assert.AreNotEqual(socket, null);
         }
 
@@ -47,8 +53,10 @@ namespace ACO.Net.Protocol.SocketIO
                 j.AddField("message", testDataissue);
             }
             //UnityEngine.Debug.Log("PRESEND FINAL DATA: " + j.ToString());
+            string nnn = Thread.CurrentThread.Name;
             this.connector.socket.Emit(message, j, (res) => {
                 //UnityEngine.Debug.Log(res.ToString());
+                string nnnn = Thread.CurrentThread.Name;
                 if (callback != null)
                 {
                     callback(res.ToString());

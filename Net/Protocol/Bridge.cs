@@ -2,7 +2,7 @@
 
 namespace ACO.Net.Protocol
 {
-    public abstract class Bridge <T>
+    public abstract class Bridge <T> where T : class
     {
         public Bridge(DataFormat.Converter<T> dataConverter, Config config)
         {
@@ -10,7 +10,31 @@ namespace ACO.Net.Protocol
             this.config = config;
         }
 
-        protected DataFormat.Converter<T> dataConverter { get; private set; }
+        DataFormat.Converter<T> dataConverter { get; set; }
+        protected A Unpack<A>(T pm) where A : class
+        {
+            try
+            {
+                return dataConverter.Unpack<A>(pm);
+            }
+            catch (System.Exception)
+            {
+                LogError("Failed to read message");
+                return null;
+            }
+        }
+        protected T Pack<A>(A from) where A : class
+        {
+            try
+            {
+                return dataConverter.Pack<A>(from);
+            }
+            catch (System.Exception)
+            {
+                LogError("Failed to prepare message");
+                return null;
+            }
+        }
         protected Config config { get; private set; }
 
         public string prefix { get; protected set; }
@@ -46,7 +70,13 @@ namespace ACO.Net.Protocol
                 prefix, addressSeparator, act
                 ), (res) =>
             {
-                callback(dataConverter.FromString(res));
+                try {
+                    callback(dataConverter.FromString(res));
+                }
+                catch (System.Exception)
+                {
+                    LogError("Failed to recieve message");
+                }
             });
         }
         protected void Emit(string act, T j, System.Action<T> callback = null, string logMessage = "")
@@ -127,6 +157,10 @@ namespace ACO.Net.Protocol
         }
         protected bool IsOk(T msg)
         {
+            if (msg == null)
+            {
+                return false;
+            }
             return dataConverter.GetErrorMessage(msg) == errorEmpty;
         }
         protected string GetErrorMessage(T msg)
@@ -136,6 +170,10 @@ namespace ACO.Net.Protocol
         protected void ProcessFail(T msg, Dictionary<string, string> dict, System.Func<string, bool> action, string additionalInfo)
         {
             string res = dataConverter.GetErrorMessage(msg);
+            if (action != null && !action(res))
+            {
+                return;
+            }
             string message = "Unknown error: [" + additionalInfo + "]: " + res;
             if (res != null && dict.ContainsKey(res))
             {
@@ -144,14 +182,6 @@ namespace ACO.Net.Protocol
             else if (res != null && baseErrors.ContainsKey(res))
             {
                 message = baseErrors[res];
-            }
-            else
-            {
-                LogError(message);
-            }
-            if (action != null && !action(res))
-            {
-                //prevent error raise
             }
             else
             {

@@ -8,7 +8,23 @@ namespace ACO.Net.Protocol.SocketIO
         public string IP = "localhost";
         public int PORT = 4567;
 
-        public bool opened = false;
+        private bool _opened = false;
+        public bool opened
+        {
+            get
+            {
+                return _opened;
+            }
+            private set
+            {
+                if (_opened != value && value)
+                {
+                    needCallOnOpen = true;
+                }
+                _opened = value;
+            }
+        }
+        bool needCallOnOpen = false;
         public bool isErrorRecieved  = false;
 
         public SocketIOComponent socketPrefab;
@@ -66,6 +82,14 @@ namespace ACO.Net.Protocol.SocketIO
         void Start()
         {
         }
+        void Update()
+        {
+            if (needCallOnOpen)
+            {
+                needCallOnOpen = false;
+                onOpen.Invoke();
+            }
+        }
         void OnOpen(SocketIOEvent e)
         {
             if (opened)
@@ -75,8 +99,6 @@ namespace ACO.Net.Protocol.SocketIO
             opened = true;
             isErrorRecieved = false;
             Debug.Log("[SocketIO] Open received: " + e.name + " " + e.data, this);
-            
-            onOpen.Invoke();
         }
         void OnClose(SocketIOEvent e)
         {
