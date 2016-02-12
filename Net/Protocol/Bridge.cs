@@ -11,36 +11,36 @@ namespace ACO.Net.Protocol
         }
 
         DataFormat.Converter<T> dataConverter { get; set; }
-        protected A Unpack<A>(T pm) where A : class
-        {
-            try
-            {
-                return dataConverter.Unpack<A>(pm);
-            }
-            catch (System.Exception)
-            {
-                LogError("Failed to read message");
-                return null;
-            }
-        }
-        protected T Pack<A>(A from) where A : class
-        {
-            try
-            {
-                return dataConverter.Pack<A>(from);
-            }
-            catch (System.Exception)
-            {
-                LogError("Failed to prepare message");
-                return null;
-            }
-        }
+        //protected A Unpack<A>(T pm) where A : class
+        //{
+        //    try
+        //    {
+        //        return dataConverter.Unpack<A>(pm);
+        //    }
+        //    catch (System.Exception)
+        //    {
+        //        LogError("Failed to read message");
+        //        return null;
+        //    }
+        //}
+        //protected T Pack<A>(A from) where A : class
+        //{
+        //    try
+        //    {
+        //        return dataConverter.Pack<A>(from);
+        //    }
+        //    catch (System.Exception)
+        //    {
+        //        LogError("Failed to prepare message");
+        //        return null;
+        //    }
+        //}
         protected Config config { get; private set; }
 
         public string prefix { get; protected set; }
         protected static Dictionary<string, string> baseErrors = new Dictionary<string, string>
         {
-            
+            {"cannotReadResult", "Invalid message" }
         };
 
         protected void LogShow(string s)
@@ -103,15 +103,31 @@ namespace ACO.Net.Protocol
                     }
                 });
         }
-        protected void Emit(
+        protected void Emit<REQ, RES>(
             string act,
-            T j,
-            System.Action<T> onSuccess,
+            REQ req,
+            System.Action<RES> onSuccess,
             System.Action<T> onFail,
             System.Action<T> onRecieve = null,
             string logMessage = ""
             )
+            where REQ : class
+            where RES : class
         {
+            T j = null;
+            try {
+                j = dataConverter.Pack<REQ>(req);
+            }
+            catch (System.Exception)
+            {
+                LogError("Failed to prepare message");
+                if (onFail != null)
+                {
+                    onFail(null);
+                }
+                return;
+            }
+            
             Emit(act, j, (res) =>
             {
                 if (onRecieve != null)
@@ -120,9 +136,23 @@ namespace ACO.Net.Protocol
                 }
                 if (IsOk(res))
                 {
+                    RES r = null;
+                    try
+                    {
+                        r = dataConverter.Unpack<RES>(res);
+                    }
+                    catch (System.Exception)
+                    {
+                        LogError("Failed to read message");
+                        if (onFail != null)
+                        {
+                            onFail(null);
+                        }
+                        return;
+                    }
                     if (onSuccess != null)
                     {
-                        onSuccess(res);
+                        onSuccess(r);
                     }
                 }
                 else
@@ -134,17 +164,19 @@ namespace ACO.Net.Protocol
                 }
             }, logMessage);
         }
-        protected void Emit(
+        protected void Emit<REQ, RES>(
             string act,
-            T j,
+            REQ j,
             Dictionary<string, string> errors,
-            System.Action<T> onSuccess,
+            System.Action<RES> onSuccess,
             System.Func<T, bool> onFail,
             System.Action<T> onRecieve = null,
             string logMessage = ""
             )
+            where REQ : class
+            where RES : class
         {
-            Emit(act, j, onSuccess, (res) => {
+            Emit<REQ, RES>(act, j, onSuccess, (res) => {
                 ProcessFail(res, errors, (msg) => {
                     if (onFail != null)
                     {
@@ -157,19 +189,19 @@ namespace ACO.Net.Protocol
         }
         protected bool IsOk(T msg)
         {
-            if (msg == null)
-            {
-                return false;
-            }
-            return dataConverter.GetErrorMessage(msg) == errorEmpty;
+            return GetErrorMessage(msg) == errorEmpty;
         }
         protected string GetErrorMessage(T msg)
         {
+            if (msg == null)
+            {
+                return "cannotReadResult";
+            }
             return dataConverter.GetErrorMessage(msg);
         }
         protected void ProcessFail(T msg, Dictionary<string, string> dict, System.Func<string, bool> action, string additionalInfo)
         {
-            string res = dataConverter.GetErrorMessage(msg);
+            string res = GetErrorMessage(msg);
             if (action != null && !action(res))
             {
                 return;

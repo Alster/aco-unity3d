@@ -16,9 +16,7 @@ namespace ACO.Net.Samples.SocketIO.JN
             System.Func<JSONObject, bool> onFail = null
             )
         {
-            Emit("test", Pack(req), testErrors, (res) => {
-                onSuccess(Unpack<Response>(res));
-            }, (res) => {
+            Emit("test", req, testErrors, onSuccess, (res) => {
                 return onFail(new JSONObject());
             }, null, "Testing bridge");
             //gift.sender = Core.get.userProfile.cloudUserId;
