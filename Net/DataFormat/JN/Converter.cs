@@ -22,6 +22,10 @@ namespace ACO.Net.DataFormat.JN
         public string GetErrorMessage(JSONObject source)
         {
             //UnityEngine.Debug.Log(source.ToString());
+            if (!source.HasField(responseName))
+            {
+                return "noField";
+            }
             return source[responseName].str;
         }
 
@@ -48,6 +52,7 @@ namespace ACO.Net.DataFormat.JN
         {
             settings.NullValueHandling = NullValueHandling.Include;
             settings.MissingMemberHandling = MissingMemberHandling.Error;
+            //settings.PreserveReferencesHandling = PreserveReferencesHandling.
             return JsonConvert.DeserializeObject<T>(source, settings);
         }
     }

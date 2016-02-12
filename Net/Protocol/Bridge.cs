@@ -11,36 +11,14 @@ namespace ACO.Net.Protocol
         }
 
         DataFormat.Converter<T> dataConverter { get; set; }
-        //protected A Unpack<A>(T pm) where A : class
-        //{
-        //    try
-        //    {
-        //        return dataConverter.Unpack<A>(pm);
-        //    }
-        //    catch (System.Exception)
-        //    {
-        //        LogError("Failed to read message");
-        //        return null;
-        //    }
-        //}
-        //protected T Pack<A>(A from) where A : class
-        //{
-        //    try
-        //    {
-        //        return dataConverter.Pack<A>(from);
-        //    }
-        //    catch (System.Exception)
-        //    {
-        //        LogError("Failed to prepare message");
-        //        return null;
-        //    }
-        //}
         protected Config config { get; private set; }
 
         public string prefix { get; protected set; }
         protected static Dictionary<string, string> baseErrors = new Dictionary<string, string>
         {
-            {"cannotReadResult", "Invalid message" }
+            {"cannotReadResult", "Invalid message" },
+            {"noField", "Uncorrect incoming message" },
+            {"messageProcessFail", "Failed processing message" }
         };
 
         protected void LogShow(string s)
@@ -120,7 +98,6 @@ namespace ACO.Net.Protocol
             }
             catch (System.Exception)
             {
-                LogError("Failed to prepare message");
                 if (onFail != null)
                 {
                     onFail(null);
@@ -143,7 +120,6 @@ namespace ACO.Net.Protocol
                     }
                     catch (System.Exception)
                     {
-                        LogError("Failed to read message");
                         if (onFail != null)
                         {
                             onFail(null);
@@ -201,7 +177,15 @@ namespace ACO.Net.Protocol
         }
         protected void ProcessFail(T msg, Dictionary<string, string> dict, System.Func<string, bool> action, string additionalInfo)
         {
-            string res = GetErrorMessage(msg);
+            string res;
+            if (msg == null)
+            {
+                res = "messageProcessFail";
+            }
+            else
+            {
+                res = GetErrorMessage(msg);
+            }
             if (action != null && !action(res))
             {
                 return;
@@ -215,10 +199,7 @@ namespace ACO.Net.Protocol
             {
                 message = baseErrors[res];
             }
-            else
-            {
-                LogError(message);
-            }
+            LogError(message);
         }
     }
 }

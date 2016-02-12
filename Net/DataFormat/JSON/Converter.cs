@@ -20,6 +20,10 @@
         public string GetErrorMessage(JSONObject source)
         {
             UnityEngine.Debug.Log(source.ToString());
+            if (!source.HasField(responseName))
+            {
+                return "noField";
+            }
             return source[responseName].str;
         }
 
