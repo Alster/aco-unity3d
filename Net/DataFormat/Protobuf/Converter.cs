@@ -1,7 +1,6 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Schema;
+﻿using ProtoBuf;
 
-namespace ACO.Net.DataFormat.JN
+namespace ACO.Net.DataFormat.Protobuf
 {
     public class Converter : Converter<JSONObject>
     {
@@ -46,17 +45,18 @@ namespace ACO.Net.DataFormat.JN
         }
         string Serialize<T>(T source)
         {
-            return JsonConvert.SerializeObject(source);
+            using (var stream = new System.IO.MemoryStream())
+            {
+                ProtoBuf.Serializer.Serialize(stream, source);
+                return System.Convert.ToBase64String(stream.ToArray());
+            }
         }
-        JsonSchemaGenerator generator = new JsonSchemaGenerator();
-        JsonSerializer serializer = new JsonSerializer();
         T Deserialize<T>(string source)
         {
-            JsonSchema schema = generator.Generate(typeof(T));
-            JsonTextReader reader = new JsonTextReader(new System.IO.StringReader(source));
-            JsonValidatingReader validatingReader = new JsonValidatingReader(reader);
-            validatingReader.Schema = schema;
-            return serializer.Deserialize<T>(validatingReader);
+            using (var stream = new System.IO.MemoryStream(System.Convert.FromBase64String(source)))
+            {
+                return Serializer.Deserialize<T>(stream);
+            }
         }
     }
 }

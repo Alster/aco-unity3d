@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿//#define RELEASE
+using System.Collections.Generic;
 
 namespace ACO.Net.Protocol
 {
@@ -14,11 +15,13 @@ namespace ACO.Net.Protocol
         protected Config config { get; private set; }
 
         public string prefix { get; protected set; }
+        static string messageError = "Protocol error";
         protected static Dictionary<string, string> baseErrors = new Dictionary<string, string>
         {
-            {"cannotReadResult", "Invalid message" },
-            {"noField", "Uncorrect incoming message" },
-            {"messageProcessFail", "Failed processing message" }
+            {"cannotReadResult", messageError },
+            {"noField", messageError },
+            {"messageProcessFail", messageError },
+            {"invalidMessage", messageError }
         };
 
         protected void LogShow(string s)
@@ -29,9 +32,9 @@ namespace ACO.Net.Protocol
         {
             config.logFinish(s);
         }
-        protected void LogError(string s)
+        protected void LogError(string s, string details)
         {
-            config.errorRaise(s);
+            config.errorRaise(s, details);
         }
 
         protected static string addressSeparator = "/";
@@ -41,20 +44,25 @@ namespace ACO.Net.Protocol
         protected virtual void RecieveBase(string message, System.Action<string> callback) {
             throw new System.NotImplementedException("Recieving is not implemetded in this bridge");
         }
-        protected void Recieve(string act, System.Action<T> callback)
+        protected void Recieve<RES>(string act, System.Action<RES> callback)
+            where RES : class
         {
             RecieveBase(System.String.Format(
                 "{0}{1}{2}",
                 prefix, addressSeparator, act
                 ), (res) =>
             {
+#if RELEASE
                 try {
-                    callback(dataConverter.FromString(res));
+#endif
+                callback(dataConverter.Unpack<RES>(dataConverter.FromStringRecieve(res)));
+#if RELEASE
                 }
                 catch (System.Exception)
                 {
-                    LogError("Failed to recieve message");
+                    LogError("Failed to recieve message", "Cannot convert from raw");
                 }
+#endif
             });
         }
         protected void Emit(string act, T j, System.Action<T> callback = null, string logMessage = "")
@@ -114,9 +122,12 @@ namespace ACO.Net.Protocol
                 if (IsOk(res))
                 {
                     RES r = null;
+#if RELEASE
                     try
                     {
-                        r = dataConverter.Unpack<RES>(res);
+#endif
+                    r = dataConverter.Unpack<RES>(res);
+#if RELEASE
                     }
                     catch (System.Exception)
                     {
@@ -126,6 +137,7 @@ namespace ACO.Net.Protocol
                         }
                         return;
                     }
+#endif
                     if (onSuccess != null)
                     {
                         onSuccess(r);
@@ -199,7 +211,7 @@ namespace ACO.Net.Protocol
             {
                 message = baseErrors[res];
             }
-            LogError(message);
+            LogError(message, additionalInfo + " : " + res);
         }
     }
 }

@@ -68,7 +68,7 @@ namespace ACO.Net.Protocol.SocketIO
         public void Subscribe(string address, System.Action<string> callback)
         {
             socket.On(address, (res) => {
-                callback(res.data != null ? res.data.str : "");
+                callback(res.data.ToString());
             });
         }
         public void Close()

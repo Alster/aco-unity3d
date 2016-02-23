@@ -16,7 +16,7 @@ namespace ACO.Net.Samples.SocketIO.JN
             config.token = "sometoken";
             config.logBegin = Debug.Log;
             config.logFinish = (m) => { };
-            config.errorRaise = Debug.LogError;
+            config.errorRaise = (r, d) => { Debug.LogError(r + " => " + d); };
             bridge = new Bridge(converter, config, connector);
         }
 

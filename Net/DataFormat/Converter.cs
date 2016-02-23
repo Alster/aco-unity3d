@@ -4,6 +4,7 @@
     {
         string GoString(T source);
         T FromString(string str);
+        T FromStringRecieve(string str);
         string GetErrorMessage(T source);
         void ApplyCredentials(ref T source, string token);
         T Pack<A>(A from) where A : class;

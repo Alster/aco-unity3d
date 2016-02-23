@@ -10,6 +10,12 @@
             UnityEngine.Debug.Log("converter result: " + JSONObject.Create(str).ToString());
             return JSONObject.Create(str)[0];
         }
+        public JSONObject FromStringRecieve(string str)
+        {
+            UnityEngine.Debug.Log("converter: " + str);
+            UnityEngine.Debug.Log("converter result: " + JSONObject.Create(str).ToString());
+            return JSONObject.Create(str);
+        }
 
         public string GoString(JSONObject source)
         {
