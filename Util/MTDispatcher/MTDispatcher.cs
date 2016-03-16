@@ -2,7 +2,7 @@
 using UnityEngine.Assertions;
 using System.Collections.Generic;
 
-namespace ACO.MTDispatcher
+namespace ACO.Util.MTDispatcher
 {
     //Explain: Execute In Main Thread
     public abstract class MTDispatcher<T> : MonoBehaviour

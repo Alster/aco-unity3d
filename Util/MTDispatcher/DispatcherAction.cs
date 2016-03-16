@@ -1,4 +1,4 @@
-﻿namespace ACO.MTDispatcher
+﻿namespace ACO.Util.MTDispatcher
 {
     public class Dispatcher : MTDispatcher
     {
