@@ -2,10 +2,10 @@
 using UnityEngine.Assertions;
 using System.Collections.Generic;
 
-namespace ACO.EIMT
+namespace ACO.MTDispatcher
 {
     //Explain: Execute In Main Thread
-    public abstract class EIMT<T> : MonoBehaviour
+    public abstract class MTDispatcher<T> : MonoBehaviour
     {
         static object _tasks_lock = new object();
         class Task
@@ -47,7 +47,7 @@ namespace ACO.EIMT
         }
     }
 
-    public abstract class EIMT : MonoBehaviour
+    public abstract class MTDispatcher : MonoBehaviour
     {
         static object _tasks_lock = new object();
         class Task

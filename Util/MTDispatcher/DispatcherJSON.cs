@@ -1,6 +1,6 @@
-﻿namespace ACO.EIMT
+﻿namespace ACO.MTDispatcher
 {
-    public class ExecuterJ : EIMT<JSONObject>
+    public class DispatcherJSON : MTDispatcher<JSONObject>
     {
         public static void Add(System.Action<JSONObject> act, JSONObject msg)
         {

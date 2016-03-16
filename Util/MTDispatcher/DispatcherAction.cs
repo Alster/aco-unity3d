@@ -1,6 +1,6 @@
-﻿namespace ACO.EIMT
+﻿namespace ACO.MTDispatcher
 {
-    public class Executer : EIMT
+    public class Dispatcher : MTDispatcher
     {
         public static void Add(System.Action act)
         {
