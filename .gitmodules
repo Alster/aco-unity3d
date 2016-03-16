@@ -1,3 +1,0 @@
-[submodule "Libs/SocketIO"]
-	path = Libs/SocketIO
-	url = git@github.com:fpanettieri/unity-socket.io.git
