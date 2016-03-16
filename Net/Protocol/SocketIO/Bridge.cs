@@ -1,4 +1,6 @@
-﻿using SocketIO;
+﻿#define ACO_DEBUG
+
+using SocketIO;
 using UnityEngine.Assertions;
 using System.Threading;
 
