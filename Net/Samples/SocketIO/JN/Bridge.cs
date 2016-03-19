@@ -19,7 +19,7 @@ namespace ACO.Net.Samples.SocketIO.JN
             Emit("test", req, testErrors, onSuccess, (res) => {
                 return onFail(new JSONObject());
             }, null, "Testing bridge");
-            //gift.sender = Core.get.userProfile.cloudUserId;
+            //gift.sender = Core.Get.userProfile.cloudUserId;
             //JSONObject j = new JSONObject(JSONObject.Type.OBJECT);
             //j.AddField("gift", gift.ToJSON());
             //Emit("send", j, sendErrors, onSuccess, onFail, null, "Sending gift");

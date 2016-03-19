@@ -29,7 +29,7 @@ namespace ACO.Net.Protocol.HTTP
             f.AddField("data", data != null ? data.ToString() : "");
 
             /*JSONObject authData = new JSONObject(JSONObject.Type.OBJECT);
-            authData.AddField("token", ACO.Core.get.userProfile.cloudToken);
+            authData.AddField("token", ACO.Core.Get.userProfile.cloudToken);
             f.AddField("auth", authData.ToString());
             f.AddField("auth", credentials.ToString());*/
 #if LOG

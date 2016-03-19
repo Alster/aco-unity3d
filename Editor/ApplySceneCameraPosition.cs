@@ -28,7 +28,7 @@ namespace ACO.Edt
             }
         }
 
-        //[MenuItem(Edt.com.name + "/" + nameObject)]
+        //[MenuItem(Edt.Com.name + "/" + nameObject)]
         //static void ApplyFromObject()
         //{
         //    SceneView.lastActiveSceneView.pivot = Selection.activeGameObject.transform.position - new Vector3(0, -5, 0);

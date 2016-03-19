@@ -15,7 +15,7 @@
 
 //    public bool IsDone
 //    {
-//        get
+//        Get
 //        {
 //            bool tmp;
 //            lock (m_Handle)

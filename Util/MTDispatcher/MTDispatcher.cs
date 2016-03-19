@@ -1,87 +1,88 @@
-﻿using UnityEngine;
-using UnityEngine.Assertions;
+﻿using UnityEngine.Assertions;
 using System.Collections.Generic;
 
 namespace ACO.Util.MTDispatcher
 {
-    //Explain: Execute In Main Thread
-    public abstract class MTDispatcher<T> : MonoBehaviour
+    public abstract class MTDispatcher<T>
     {
-        static object _tasks_lock = new object();
-        class Task
+        private readonly object _tasksLock = new object();
+        private class Task
         {
             public Task(System.Action<T> act, T msg)
             {
-                this.act = act;
-                this.msg = msg;
+                this._act = act;
+                this._msg = msg;
             }
-            System.Action<T> act;
-            T msg;
+
+            private readonly System.Action<T> _act;
+            private readonly T _msg;
             public void Execute()
             {
-                Assert.AreNotEqual(act, null);
-                act(msg);
+                Assert.AreNotEqual(_act, null);
+                _act(_msg);
             }
         }
-        static Queue<Task> tasks = new Queue<Task>();
-        protected static void AddTask(System.Action<T> act, T msg)
+        private readonly Queue<Task> _tasks = new Queue<Task>();
+        protected void AddTask(System.Action<T> act, T msg)
         {
-            lock (_tasks_lock)
+            lock (_tasksLock)
             {
-                tasks.Enqueue(new Task(act, msg));
+                _tasks.Enqueue(new Task(act, msg));
             }
         }
-        static void ExecuteTasks()
+        private void ExecuteTasks()
         {
-            lock (_tasks_lock)
+            lock (_tasksLock)
             {
-                while (tasks.Count > 0)
+                while (_tasks.Count > 0)
                 {
-                    tasks.Dequeue().Execute();
+                    _tasks.Dequeue().Execute();
                 }
             }
         }
-        void Update()
+        public void Update()
         {
             ExecuteTasks();
         }
     }
 
-    public abstract class MTDispatcher : MonoBehaviour
+    public abstract class MTDispatcher
     {
-        static object _tasks_lock = new object();
-        class Task
+        private readonly object _tasksLock = new object();
+
+        private class Task
         {
             public Task(System.Action act)
             {
-                this.act = act;
+                this._act = act;
             }
-            System.Action act;
+
+            readonly System.Action _act;
             public void Execute()
             {
-                Assert.AreNotEqual(act, null);
-                act();
+                Assert.AreNotEqual(_act, null);
+                _act();
             }
         }
-        static Queue<Task> tasks = new Queue<Task>();
-        protected static void AddTask(System.Action act)
+        private readonly Queue<Task> _tasks = new Queue<Task>();
+        protected void AddTask(System.Action act)
         {
-            lock (_tasks_lock)
+            lock (_tasksLock)
             {
-                tasks.Enqueue(new Task(act));
+                _tasks.Enqueue(new Task(act));
             }
         }
-        static void ExecuteTasks()
+        private void ExecuteTasks()
         {
-            lock (_tasks_lock)
+            lock (_tasksLock)
             {
-                while (tasks.Count > 0)
+                while (_tasks.Count > 0)
                 {
-                    tasks.Dequeue().Execute();
+                    _tasks.Dequeue().Execute();
                 }
             }
         }
-        void Update()
+        public void Update()
         {
             ExecuteTasks();
         }

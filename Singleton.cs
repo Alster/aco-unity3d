@@ -3,12 +3,16 @@ using UnityEngine;
 
 namespace ACO
 {
-    public class Singleton<T> : UnityEngine.MonoBehaviour where T : UnityEngine.MonoBehaviour
+    public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
+        protected static void SetInstance(T inst)
+        {
+            _instance = inst;
+        }
         private static T _instance;
-        private static object _lock = new object();
+        private static readonly object _lock = new object();
 
-        public static T get
+        public static T Get
         {
             get
             {
@@ -23,17 +27,12 @@ namespace ACO
 #endif
                 lock (_lock)
                 {
-                    if (_instance == null)
-                    {
-                        _instance = (T)FindObjectOfType(typeof(T));
-                        if (FindObjectsOfType(typeof(T)).Length > 1)
-                        {
-                            Debug.LogError("[Singleton] Something went really wrong " +
-                                " - there should never be more than 1 singleton!" +
-                                " Reopening the scene might fix it.");
-                            return _instance;
-                        }
-                    }
+                    if (_instance != null) return _instance;
+                    _instance = (T)FindObjectOfType(typeof(T));
+                    if (FindObjectsOfType(typeof (T)).Length <= 1) return _instance;
+                    Debug.LogError("[Singleton] Something went really wrong " +
+                                   " - there should never be more than 1 singleton!" +
+                                   " Reopening the scene might fix it.");
                     return _instance;
                 }
             }
@@ -46,9 +45,14 @@ namespace ACO
         }
 #endif
 
-        static public void DoCoroutine(IEnumerator e)
+        public static Coroutine DoCoroutine(IEnumerator e)
         {
-            get.StartCoroutine(e);
+            return Get.StartCoroutine(e);
+        }
+        public static void BreakCoroutine(Coroutine e)
+        {
+            Debug.Log("This is not joke");
+            Get.StopCoroutine(e);
         }
     }
 }

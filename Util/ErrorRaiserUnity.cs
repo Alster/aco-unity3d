@@ -26,26 +26,26 @@ namespace ACO.Util
         }
         private static void OpenFile()
         {
-            Assembly assembly = Assembly.GetAssembly(typeof(UnityEditor.SceneView));
-            System.Type type = assembly.GetType("UnityEditorInternal.InternalEditorUtility");
-            if (type == null)
-            {
-                UnityEngine.Debug.Log("Failed to open source file");
-                return;
-            }
-            string[] stackFrames = System.Environment.StackTrace.Split(new char[] { '\n' });
-            string callingFrame = stackFrames[4];
-            string[] splitLog = callingFrame.Split(':');
-            char drive = splitLog[0][splitLog[0].Length - 1];
-            string filePath = splitLog[1];
-            splitLog[2] = splitLog[2].TrimStartString(
-                "line ");
-            int lineNumber = int.Parse(splitLog[2].GetBeforeNextChar(
-                '\n'));
-            string fullDrive = drive + ":" + filePath;
-            //Debug.Log(@fullDrive + " line #" + lineNumber );
-            MethodInfo method = type.GetMethod("OpenFileAtLineExternal");
-            method.Invoke(method, new object[] { @fullDrive, lineNumber });
+            //Assembly assembly = Assembly.GetAssembly(typeof(UnityEditor.SceneView));
+            //System.Type type = assembly.GetType("UnityEditorInternal.InternalEditorUtility");
+            //if (type == null)
+            //{
+            //    UnityEngine.Debug.Log("Failed to open source file");
+            //    return;
+            //}
+            //string[] stackFrames = System.Environment.StackTrace.Split(new char[] { '\n' });
+            //string callingFrame = stackFrames[4];
+            //string[] splitLog = callingFrame.Split(':');
+            //char drive = splitLog[0][splitLog[0].Length - 1];
+            //string filePath = splitLog[1];
+            //splitLog[2] = splitLog[2].TrimStartString(
+            //    "line ");
+            //int lineNumber = int.Parse(splitLog[2].GetBeforeNextChar(
+            //    '\n'));
+            //string fullDrive = drive + ":" + filePath;
+            ////Debug.Log(@fullDrive + " line #" + lineNumber );
+            //MethodInfo method = type.GetMethod("OpenFileAtLineExternal");
+            //method.Invoke(method, new object[] { @fullDrive, lineNumber });
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace ACO.Util.MTDispatcher
 {
-    public class Dispatcher : MTDispatcher
+    public class DispatcherAction : MTDispatcher
     {
-        public static void Add(System.Action act)
+        public void Add(System.Action act)
         {
             AddTask(act);
         }

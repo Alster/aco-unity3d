@@ -10,7 +10,7 @@
 //    public class JSchemaTools : Editor
 //    {
 //        public static System.Type entryType = typeof(Schema.TestClass);
-//        [MenuItem(Edt.com.name + "/" + com.name + "/Update JSON schema")]
+//        [MenuItem(Edt.Com.name + "/" + Com.name + "/Update JSON schema")]
 //        [UnityEditor.Callbacks.DidReloadScripts]
 //        public static void UpdateSchemas()
 //        {
