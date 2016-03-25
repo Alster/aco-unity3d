@@ -15,5 +15,10 @@ namespace ACO.UI
             ins.Apply(message, details);
             Debug.LogError(message + " => " + details);
         }
+
+        public void Raise(Error err)
+        {
+            Raise(err.Message, err.Details);
+        }
     }
 }
