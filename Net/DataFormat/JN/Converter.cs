@@ -5,7 +5,8 @@ namespace ACO.Net.DataFormat.JN
 {
     public class Converter : Converter<JSONObject>
     {
-        static readonly string responseName = "res";
+        static readonly string errorFieldName = "err";
+        static readonly string dataFieldName = "data";
 
         public JSONObject FromString(string str)
         {
@@ -23,11 +24,11 @@ namespace ACO.Net.DataFormat.JN
 
         public string GetErrorMessage(JSONObject source)
         {
-            if (!source.HasField(responseName))
+            if (!source.HasField(errorFieldName))
             {
-                return "noField";
+                return null;
             }
-            return source[responseName].str;
+            return source[errorFieldName].str;
         }
 
         public void ApplyCredentials(ref JSONObject source, string token)
@@ -37,12 +38,12 @@ namespace ACO.Net.DataFormat.JN
         public JSONObject Pack<T>(T from) where T : class
         {
             JSONObject pm = JSONObject.Create(JSONObject.Type.OBJECT);
-            pm.AddField("data", JSONObject.Create(Serialize(from)));
+            pm.AddField(dataFieldName, JSONObject.Create(Serialize(from)));
             return pm;
         }
         public T Unpack<T>(JSONObject pm) where T : class
         {
-            return Deserialize<T>(pm["data"].ToString());
+            return Deserialize<T>(pm[dataFieldName].ToString());
         }
         string Serialize<T>(T source)
         {

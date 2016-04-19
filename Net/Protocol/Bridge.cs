@@ -44,6 +44,18 @@ namespace ACO.Net.Protocol
         protected virtual void RecieveBase(string message, System.Action<string> callback) {
             throw new System.NotImplementedException("Recieving is not implemetded in this bridge");
         }
+
+        private enum DebugEventType : byte
+        {
+            IN = 0, 
+            OUT = 1
+        }
+        private void DebugEvent(DebugEventType debugType, string act, string msg)
+        {
+#if !RELEASE
+            UnityEngine.Debug.Log(string.Format("{0} [{1}:{2}] {3}", debugType == DebugEventType.IN ? "IN" : "OUT", prefix, act, (new JSONObject(msg)).Print()));
+#endif
+        }
         protected void Recieve<RES>(string act, System.Action<RES> callback)
             where RES : class
         {
@@ -52,6 +64,7 @@ namespace ACO.Net.Protocol
                 prefix, addressSeparator, act
                 ), (res) =>
             {
+                DebugEvent(DebugEventType.IN, act, res);
 #if RELEASE
                 try {
 #endif
@@ -74,11 +87,12 @@ namespace ACO.Net.Protocol
             
             dataConverter.ApplyCredentials(ref j, config.token);
             string data = dataConverter.GoString(j);
-            //UnityEngine.Debug.Log("DATA: " + data);
+            DebugEvent(DebugEventType.OUT, act, data);
             EmitBase(System.String.Format(
                 "{0}{1}{2}",
                 prefix, addressSeparator, act
                 ), data, (res) => {
+                    DebugEvent(DebugEventType.IN, act, res);
                     if (callback != null)
                     {
                         if (logMessage.Length > 0)
