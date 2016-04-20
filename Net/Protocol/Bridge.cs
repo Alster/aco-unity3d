@@ -59,6 +59,7 @@ namespace ACO.Net.Protocol
         protected void Recieve<RES>(string act, System.Action<RES> callback)
             where RES : class
         {
+            UnityEngine.Debug.Log("RECIEVED");
             RecieveBase(System.String.Format(
                 "{0}{1}{2}",
                 prefix, addressSeparator, act
